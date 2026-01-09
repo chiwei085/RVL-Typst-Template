@@ -248,6 +248,10 @@
 
 #let alert(body) = touying-fn-wrapper(self => utils.alert-with-primary-color.with(self: self)[body])
 
+#let speaker-note(mode: "typ", setting: it => it, note) = {
+  touying-fn-wrapper(utils.speaker-note, mode: mode, setting: setting, note)
+}
+
 #let rvl-theme(footer: none, ..args, body) = {
   set text(font: "DejaVu Sans", size: 28pt, fill: rgb("#000000"))
 
