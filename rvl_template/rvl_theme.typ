@@ -156,7 +156,8 @@
   self = utils.merge-dicts(
     self,
     config-page(
-      paper: "presentation-16-9",
+      width: RVL_W,
+      height: RVL_H,
       fill: self.colors.neutral-lightest,
       margin: 0in,
       header: none,
@@ -260,7 +261,7 @@
   ]
 
   show: touying-slides.with(
-    config-page(paper: "presentation-16-9", margin: 0in),
+    config-page(width: RVL_W, height: RVL_H, margin: 0in),
     config-common(slide-fn: rvl-slide, new-section-slide-fn: none),
     config-methods(title-slide: rvl-title-slide, alert: utils.alert-with-primary-color),
     config-colors(
