@@ -187,7 +187,7 @@
 
     #place(top + left, dx: RVL_BODY_X, dy: RVL_BODY_Y)[
       #box(width: RVL_BODY_W)[
-        #set text(size: 28pt, fill: self.colors.neutral-darkest)
+        #set text(size: 25pt, fill: self.colors.neutral-darkest)
         #set par(leading: 1.12em)
         #body
       ]
