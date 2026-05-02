@@ -2,6 +2,20 @@
 
 A reusable Touying theme for RVL group meeting slides with PDF and PowerPoint export.
 
+## Package use
+
+Use the published package in an existing project:
+
+```typ
+#import "@preview/rvl-group-meeting:1.0.0": *
+```
+
+Start a new project from the template package:
+
+```bash
+typst init @preview/rvl-group-meeting:1.0.0
+```
+
 ## Prerequisites
 
 - `typst` CLI
@@ -60,6 +74,8 @@ The theme expects a date and renders it as `Jan 9, 2026`.
 
 ```text
 .
+├── typst.toml
+├── lib.typ
 ├── examples/
 │   └── YYYY-MM-DD/
 │       ├── main.typ
@@ -71,11 +87,13 @@ The theme expects a date and renders it as `Jan 9, 2026`.
     │   └── logo.png
     ├── main.typ
     └── rvl_theme.typ
+├── thumbnail.png
 ├── skills/
 │   └── rvl-group-meeting-typst/
 │       └── SKILL.md
 ```
 
+- `typst.toml` and `lib.typ` define the Typst package entrypoint and template metadata.
 - `rvl_template/main.typ` is the starter template used by `make new`.
 - `examples/` stores dated slide decks and their supporting files.
 - `skills/` stores repo-local workflow guidance for slide-authoring agents.

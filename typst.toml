@@ -1,0 +1,24 @@
+[package]
+name = "rvl-group-meeting"
+version = "1.0.0"
+compiler = "0.14.0"
+entrypoint = "lib.typ"
+authors = ["chiwei085"]
+license = "MIT"
+description = "An RVL group meeting slide theme and template built on Touying."
+repository = "https://github.com/chiwei085/RVL-Typst-Template"
+keywords = ["presentation", "slides", "touying", "template", "meeting"]
+categories = ["presentation"]
+exclude = [
+  ".git",
+  ".github",
+  ".gitignore",
+  "examples",
+  "skills",
+  "Makefile",
+]
+
+[template]
+path = "rvl_template"
+entrypoint = "main.typ"
+thumbnail = "thumbnail.png"

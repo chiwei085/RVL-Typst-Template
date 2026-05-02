@@ -2,13 +2,14 @@
 
 All notable changes to this template are documented in this file.
 
-## v1.0 - 2026-05-02
+## v1.0.0 - 2026-05-03
 
 ### Added
 
 - Added `make new DATE=YYYY-MM-DD` to scaffold a new deck under `examples/`.
 - Added repo-local slide authoring guidance in `skills/rvl-group-meeting-typst/SKILL.md`.
 - Added Tinymist hover docs for the public theme API in `rvl_template/rvl_theme.typ`.
+- Added `typst.toml`, `lib.typ`, and template metadata so the repo can be published as a Typst package.
 
 ### Changed
 
