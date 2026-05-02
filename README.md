@@ -32,7 +32,6 @@ typst init @preview/steady-rvl-slides:0.1.0
 This creates a project with:
 
 - `main.typ`
-- `rvl_theme.typ`
 - `assets/logo.png`
 
 ## Minimal example
@@ -96,11 +95,12 @@ This repository also includes local development helpers:
 .
 ├── typst.toml
 ├── lib.typ
+├── src/
+│   └── rvl_theme.typ
 ├── template/
 │   ├── assets/
 │   │   └── logo.png
 │   ├── main.typ
-│   └── rvl_theme.typ
 ├── thumbnail.png
 ├── examples/
 │   └── YYYY-MM-DD/
@@ -108,16 +108,12 @@ This repository also includes local development helpers:
 │       ├── paper.pdf
 │       └── figs/
 ├── Makefile
-├── rvl_template/
-│   ├── assets/
-│   │   └── logo.png
-│   ├── main.typ
-│   └── rvl_theme.typ
 ├── skills/
 │   └── rvl-group-meeting-typst/
 │       └── SKILL.md
 ```
 
 - `lib.typ` is the package entrypoint.
+- `src/rvl_theme.typ` is the single source of truth for the theme implementation.
 - `template/` is the Universe-facing template copied by `typst init`.
-- `rvl_template/` remains the repo-local source used by the Makefile workflow.
+- `Makefile` scaffolds repo-local examples from `template/main.typ`.

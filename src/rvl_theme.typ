@@ -185,7 +185,7 @@
 
 #let rvl-logo(self) = [
   #place(top + right, dx: RVL_LOGO_RIGHT_PAD, dy: RVL_LOGO_Y)[
-    #image("./assets/logo.png", width: RVL_LOGO_W, height: RVL_LOGO_H, fit: "contain")
+    #image("../template/assets/logo.png", width: RVL_LOGO_W, height: RVL_LOGO_H, fit: "contain")
   ]
 ]
 

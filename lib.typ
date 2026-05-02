@@ -1,1 +1,1 @@
-#import "rvl_template/rvl_theme.typ": *
+#import "src/rvl_theme.typ": *

@@ -31,7 +31,7 @@ Do not invent claims that available sources cannot support.
 
 - Theme import:
   ```typ
-  #import "../../rvl_template/rvl_theme.typ": *
+  #import "../../lib.typ": *
   ```
 - Cover:
   ```typ

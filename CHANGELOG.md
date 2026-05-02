@@ -19,6 +19,7 @@ All notable changes to this template are documented in this file.
   automatic heading-driven slides in the starter template, and explicit `#rvl-slide(...)` / `#rvl-outline-slide(...)` for larger decks.
 - Centralized theme colors and cover layout constants in `rvl_template/rvl_theme.typ`.
 - Renamed the package to `steady-rvl-slides` and aligned versioning to `0.1.0`.
+- Moved the theme implementation to `src/rvl_theme.typ` and removed duplicate template-local theme files.
 
 ### Removed
 
