@@ -20,7 +20,8 @@ make new DATE=2026-05-11
 Then edit `config-info(...)` in `examples/2026-05-11/main.typ` and write slides.
 
 - `= Section` is a logical section marker only.
-- Each slide is created by `== Slide Title`.
+- In the starter template, each `== Slide Title` becomes a slide automatically.
+- For larger or more stable decks, prefer explicit `#rvl-slide(...)` and `#rvl-outline-slide(...)`.
 
 Build PDF:
 
@@ -70,7 +71,11 @@ The theme expects a date and renders it as `Jan 9, 2026`.
     │   └── logo.png
     ├── main.typ
     └── rvl_theme.typ
+├── skills/
+│   └── rvl-group-meeting-typst/
+│       └── SKILL.md
 ```
 
 - `rvl_template/main.typ` is the starter template used by `make new`.
 - `examples/` stores dated slide decks and their supporting files.
+- `skills/` stores repo-local workflow guidance for slide-authoring agents.
