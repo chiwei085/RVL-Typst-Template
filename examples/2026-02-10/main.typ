@@ -1,5 +1,5 @@
 #import "@preview/touying:0.6.1": *
-#import "../../rvl_template/rvl_theme.typ": *
+#import "../../lib.typ": *
 
 #show: rvl-theme.with(
   // Fill these manually:
