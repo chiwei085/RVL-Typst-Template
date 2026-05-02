@@ -1,4 +1,7 @@
 *.pptx
 *.pdf
+!main.pdf
 paper.md
 note.md
+
+/examples/*/figs/
