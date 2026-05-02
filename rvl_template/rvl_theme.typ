@@ -3,6 +3,20 @@
 #import utils: *
 
 #let RVL_PRIMARY = rgb("#002060")
+#let RVL_NEUTRAL_LIGHTEST = rgb("#ffffff")
+#let RVL_NEUTRAL_DARKEST = rgb("#000000")
+#let RVL_TITLE_META = rgb("#666666")
+#let RVL_DIVIDER = rgb("#c8ccd2")
+
+#let RVL_CARD_STROKE = rgb("#cbd5e1")
+#let RVL_CARD_FILL = rgb("#fbfdff")
+#let RVL_FIGURE_STROKE = rgb("#9aa4b2")
+#let RVL_FIGURE_FILL = rgb("#f7f9fc")
+#let RVL_FIGURE_TEXT = rgb("#344054")
+#let RVL_FIGURE_SUBTITLE = rgb("#667085")
+#let RVL_QUESTION_STROKE = rgb("#d6deeb")
+#let RVL_QUESTION_FILL = rgb("#fbfcfe")
+#let RVL_QUESTION_LABEL = rgb("#7b8798")
 
 // Page geometry (inches)
 #let RVL_W = 13.3333in
@@ -48,9 +62,25 @@
 #let RVL_COVER_INSET_TOP = 6pt
 #let RVL_COVER_INSET_BOTTOM = 10pt
 
+// Cover layout
+#let RVL_COVER_W = 12.2in
+#let RVL_COVER_H = 2.3in
+#let RVL_COVER_META_W = 10.8in
+#let RVL_COVER_VENUE_H = 0.22in
+#let RVL_COVER_GROUP_SEP = 0.22in
+#let RVL_COVER_ITEM_SEP = 0.07in
+#let RVL_COVER_AUTHOR_PAD_TOP = 0.12in
+#let RVL_COVER_DIVIDER_W = 6.5in
+#let RVL_COVER_DIVIDER_STROKE = 0.8pt + RVL_DIVIDER
+
 // ----------------------------
 // Date helpers
 // ----------------------------
+
+/// Parse an ISO date string into a `datetime`.
+///
+/// - `iso` (`str`): Date string in `YYYY-MM-DD` format.
+/// -> datetime
 #let rvl-date(iso) = {
   let p = iso.split("-")
   datetime(year: int(p.at(0)), month: int(p.at(1)), day: int(p.at(2)))
@@ -122,14 +152,6 @@
   leading: 0.98em,
 )
 
-#let rvl-fit-cover-meta(content, width, max-height) = rvl-fit-text(
-  content,
-  width,
-  max-height,
-  (30pt, 28pt, 26pt, 24pt, 22pt, 20pt, 18pt, 16pt, 14pt),
-  leading: 0.95em,
-)
-
 #let rvl-fit-cover-authors(content, width, max-height) = rvl-fit-text(
   content,
   width,
@@ -187,9 +209,116 @@
   ]
 ]
 
+#let rvl-outline-nav-card(title) = block(
+  width: 100%,
+  inset: 12pt,
+  radius: 8pt,
+  stroke: 1pt + RVL_CARD_STROKE,
+  fill: RVL_CARD_FILL,
+)[
+  #set text(size: 18pt, weight: "bold", fill: RVL_PRIMARY)
+  #title
+]
+
+/// Render a simple statistic or summary card.
+///
+/// - `title`: Card title shown in the accent color.
+/// - `body`: Card contents.
+/// -> content
+#let rvl-stat-card(title, body) = block(
+  width: 100%,
+  inset: 12pt,
+  radius: 8pt,
+  stroke: 1pt + RVL_CARD_STROKE,
+  fill: RVL_CARD_FILL,
+)[
+  #set text(size: 16pt)
+  #text(size: 18pt, weight: "bold", fill: RVL_PRIMARY)[#title]
+  #v(0.25em)
+  #body
+]
+
+/// Render a styled placeholder block for a figure slot.
+///
+/// - `title`: Main placeholder label.
+/// - `subtitle`: Optional secondary description.
+/// - `height`: Placeholder height.
+/// -> content
+#let rvl-figure-placeholder(title, subtitle: none, height: 2.4in) = block(
+  width: 100%,
+  height: height,
+  inset: 18pt,
+  radius: 10pt,
+  stroke: 1.2pt + RVL_FIGURE_STROKE,
+  fill: RVL_FIGURE_FILL,
+)[
+  #set align(center + horizon)
+  #set text(fill: RVL_FIGURE_TEXT)
+  #text(size: 15pt, weight: "semibold")[Figure placeholder]
+  #v(0.45em)
+  #text(size: 19pt, weight: "bold")[#title]
+  #if subtitle != none {
+    v(0.55em)
+    text(size: 15pt, fill: RVL_FIGURE_SUBTITLE)[#subtitle]
+  }
+]
+
+/// Deprecated alias for `rvl-stat-card`.
+///
+/// New decks should use `rvl-stat-card`.
+/// -> content
+#let stat-card(title, body) = rvl-stat-card(title, body)
+
+/// Deprecated alias for `rvl-figure-placeholder`.
+///
+/// New decks should use `rvl-figure-placeholder`.
+/// -> content
+#let fig-placeholder(title, subtitle: none, height: 2.4in) = rvl-figure-placeholder(
+  title,
+  subtitle: subtitle,
+  height: height,
+)
+
+/// Render the central research-question card used on outline slides.
+///
+/// - `question`: Main question text.
+/// - `label`: Small label shown above the question.
+/// - `height`: Card height.
+/// -> content
+#let rvl-outline-question-card(
+  question,
+  label: [RESEARCH QUESTION],
+  height: 2.55in,
+) = block(
+  width: 100%,
+  height: height,
+  inset: 16pt,
+  radius: 14pt,
+  stroke: 1pt + RVL_QUESTION_STROKE,
+  fill: RVL_QUESTION_FILL,
+)[
+  #set par(justify: false)
+  #text(size: 11pt, weight: "semibold", tracking: 0.08em, fill: RVL_QUESTION_LABEL)[#label]
+  #v(0.38em)
+  #rvl-fit-text(
+    question,
+    RVL_BODY_W - 32pt,
+    height - 0.9in,
+    (16.5pt, 16pt, 15.5pt, 15pt, 14.5pt, 14pt),
+    leading: 0.98em,
+  )
+]
+
 // ----------------------------
 // Slide functions
 // ----------------------------
+
+/// Render a standard content slide in the RVL layout.
+///
+/// - `body`: Slide body content.
+/// - `title`: Optional slide title. Defaults to the current level-2 heading.
+/// - `args`: Additional Touying slide options.
+/// -> content
 #let rvl-slide(body, title: auto, ..args) = touying-slide-wrapper(self => {
   let slide-title = if title != auto { title } else {
     utils.display-current-heading(level: 2, numbered: false)
@@ -241,6 +370,62 @@
   touying-slide(self: self, layer, ..args)
 })
 
+/// Render the default outline slide with a question card and section nav cards.
+///
+/// - `question`: Central research question.
+/// - `sections`: Sequence of section labels.
+/// - `title`: Slide title.
+/// - `prompt`: Short label above the question card.
+/// - `question-label`: Label shown inside the question card.
+/// - `question-height`: Height of the question card.
+/// - `body`: Optional extra content appended below the outline grid.
+/// -> content
+#let rvl-outline-slide(
+  question: [This is a question.],
+  sections: ([Introduction], [Method], [Experiment], [Conclusion]),
+  title: [Outline],
+  prompt: [Central research question],
+  question-label: [RESEARCH QUESTION],
+  question-height: 2.55in,
+  ..args,
+  body,
+) = rvl-slide(title: title, ..args)[
+  #set text(size: 18pt)
+  #grid(
+    columns: (1fr),
+    rows: (auto, question-height, auto),
+    gutter: 0.18in,
+    [
+      *#prompt*
+    ],
+    [
+      #rvl-outline-question-card(
+        question,
+        label: question-label,
+        height: question-height,
+      )
+    ],
+    [
+      #grid(
+        columns: sections.map(_ => 1fr),
+        gutter: 0.18in,
+        ..sections.map(section => rvl-outline-nav-card(section)),
+      )
+    ],
+  )
+  #body
+]
+
+/// Render the title slide using `config-info(...)` metadata.
+///
+/// Supported metadata fields:
+/// - `title`: Deck title.
+/// - `presenter`: Presenter name shown with the date.
+/// - `paper_authors`: Full author list shown below the title.
+/// - `paper_authors_short`: Optional shorter author list for compact covers.
+/// - `paper_venue`: Venue or source label.
+/// - `date`: Presentation date as `datetime` or ISO string via `rvl-date`.
+/// -> content
 #let rvl-title-slide(..args) = touying-slide-wrapper(self => {
   let info = self.info + args.named()
   let presenter = info.at("presenter", default: info.at("author", default: none))
@@ -258,15 +443,8 @@
     foreground: none,
   ))
 
-  let cover_w = 12.2in
-  let cover_h = 2.3in
-  let fit_h = cover_h - RVL_COVER_INSET_TOP - RVL_COVER_INSET_BOTTOM
-  let meta_w = 10.8in
+  let fit_h = RVL_COVER_H - RVL_COVER_INSET_TOP - RVL_COVER_INSET_BOTTOM
   let authors_h = if paper_venue != none { 0.80in } else { 0.92in }
-  let venue_h = 0.22in
-  let group_sep = 0.22in
-  let item_sep = 0.07in
-  let divider_stroke = 0.8pt + rgb("#c8ccd2")
 
   let presenter_date = if presenter != none and info.date != none {
     [#presenter #h(0.35em)·#h(0.35em) #rvl-format-date(info.date)]
@@ -283,34 +461,34 @@
     #set text(fill: self.colors.neutral-darkest)
     #set par(justify: false)
 
-    #box(width: cover_w, inset: (top: RVL_COVER_INSET_TOP, bottom: RVL_COVER_INSET_BOTTOM))[
+    #box(width: RVL_COVER_W, inset: (top: RVL_COVER_INSET_TOP, bottom: RVL_COVER_INSET_BOTTOM))[
       #set text(weight: "bold")
-      #rvl-fit-cover-title(info.title, cover_w, fit_h)
+      #rvl-fit-cover-title(info.title, RVL_COVER_W, fit_h)
     ]
 
-    #v(group_sep)
-    #line(length: 6.5in, stroke: divider_stroke)
+    #v(RVL_COVER_GROUP_SEP)
+    #line(length: RVL_COVER_DIVIDER_W, stroke: RVL_COVER_DIVIDER_STROKE)
 
     #if paper_authors != none {
-      v(0.12in)
+      v(RVL_COVER_AUTHOR_PAD_TOP)
       if paper_venue != none {
-        box(width: meta_w, height: venue_h, clip: true)[
+        box(width: RVL_COVER_META_W, height: RVL_COVER_VENUE_H, clip: true)[
           #set align(center + horizon)
-          #set text(fill: rgb("#666666"))
-          #rvl-fit-cover-venue(paper_venue, meta_w, venue_h)
+          #set text(fill: RVL_TITLE_META)
+          #rvl-fit-cover-venue(paper_venue, RVL_COVER_META_W, RVL_COVER_VENUE_H)
         ]
-        v(item_sep)
+        v(RVL_COVER_ITEM_SEP)
       }
 
-      box(width: meta_w, height: authors_h, clip: true)[
+      box(width: RVL_COVER_META_W, height: authors_h, clip: true)[
         #set align(center + horizon)
-        #rvl-fit-cover-authors(rvl-format-authors(paper_authors), meta_w, authors_h)
+        #rvl-fit-cover-authors(rvl-format-authors(paper_authors), RVL_COVER_META_W, authors_h)
       ]
     }
 
     #if presenter_date != none {
-      v(group_sep)
-      set text(size: 16pt, fill: rgb("#666666"), weight: "regular")
+      v(RVL_COVER_GROUP_SEP)
+      set text(size: 16pt, fill: RVL_TITLE_META, weight: "regular")
       presenter_date
     }
   ]
@@ -318,14 +496,30 @@
   touying-slide(self: self, body)
 })
 
+/// Render emphasized inline alert styling using the theme primary color.
+///
+/// - `body`: Content to emphasize.
+/// -> content
 #let alert(body) = touying-fn-wrapper(self => utils.alert-with-primary-color.with(self: self)(body))
 
+/// Attach speaker notes to the current slide.
+///
+/// - `mode`: Note output mode passed to Touying.
+/// - `setting`: Note setting transformer passed to Touying.
+/// - `note`: Note content.
+/// -> content
 #let speaker-note(mode: "typ", setting: it => it, note) = {
   touying-fn-wrapper(utils.speaker-note, mode: mode, setting: setting, note)
 }
 
+/// Apply the RVL Touying theme to a slide deck.
+///
+/// - `footer`: Footer content rendered in the bottom center area.
+/// - `args`: Additional Touying configuration arguments.
+/// - `body`: Deck body content.
+/// -> content
 #let rvl-theme(footer: none, ..args, body) = {
-  set text(font: "DejaVu Sans", size: 28pt, fill: rgb("#000000"))
+  set text(font: "DejaVu Sans", size: 28pt, fill: RVL_NEUTRAL_DARKEST)
 
   show heading.where(level: 1): it => none
   show heading.where(level: 2): it => none
@@ -342,8 +536,8 @@
     config-methods(title-slide: rvl-title-slide, alert: utils.alert-with-primary-color),
     config-colors(
       primary: RVL_PRIMARY,
-      neutral-lightest: rgb("#ffffff"),
-      neutral-darkest: rgb("#000000"),
+      neutral-lightest: RVL_NEUTRAL_LIGHTEST,
+      neutral-darkest: RVL_NEUTRAL_DARKEST,
     ),
     config-store(title: none, footer: footer),
     ..args,
