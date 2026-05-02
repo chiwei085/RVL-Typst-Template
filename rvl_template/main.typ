@@ -5,7 +5,9 @@
   // Fill these manually:
   config-info(
     title: [LiteVLoc:\ Map-Lite Visual Localization for\ Image Goal Navigation],
-    author: [Your Name],
+    presenter: [Your Name],
+    paper_authors: [First Author, Second Author, Third Author, et al.],
+    paper_venue: [ICRA 2026],
     date: rvl-date("2026-01-09"),
   ),
   footer: self => self.info.institution,

@@ -5,7 +5,12 @@
   // Fill these manually:
   config-info(
     title: [LiteVLoc:\ Map-Lite Visual Localization for\ Image Goal Navigation],
-    author: [Chi Wei, Yeh],
+    presenter: [Chi Wei, Yeh],
+    paper_authors: [
+      Jianhao Jiao, Jinhao He, Changkun Liu, Sebastian Aegidius,
+      Xiangcheng Hu, Tristan Braud, Dimitrios Kanoulas
+    ],
+    paper_venue: [ICRA 2024],
     date: rvl-date("2026-02-10"),
   ),
   footer: self => self.info.institution,
