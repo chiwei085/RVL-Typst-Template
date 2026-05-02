@@ -1,13 +1,13 @@
 [package]
-name = "rvl-group-meeting"
-version = "1.0.0"
+name = "steady-rvl-slides"
+version = "0.1.0"
 compiler = "0.14.0"
 entrypoint = "lib.typ"
 authors = ["chiwei085"]
 license = "MIT"
-description = "An RVL group meeting slide theme and template built on Touying."
+description = "RVL group meeting slides built on Touying."
 repository = "https://github.com/chiwei085/RVL-Typst-Template"
-keywords = ["presentation", "slides", "touying", "template", "meeting"]
+keywords = ["presentation", "slides", "touying", "meeting", "rvl"]
 categories = ["presentation"]
 exclude = [
   ".git",
@@ -16,9 +16,10 @@ exclude = [
   "examples",
   "skills",
   "Makefile",
+  "CHANGELOG.md",
 ]
 
 [template]
-path = "rvl_template"
+path = "template"
 entrypoint = "main.typ"
 thumbnail = "thumbnail.png"

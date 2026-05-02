@@ -1,99 +1,123 @@
 # RVL Touying Theme
 
-A reusable Touying theme for RVL group meeting slides with PDF and PowerPoint export.
+A Touying-based slide template for RVL group meetings.
 
-## Package use
+## Use as a package
 
-Use the published package in an existing project:
+Import the theme in an existing Typst project:
 
 ```typ
-#import "@preview/rvl-group-meeting:1.0.0": *
+#import "@preview/steady-rvl-slides:0.1.0": *
 ```
 
-Start a new project from the template package:
+Then apply the theme:
+
+```typ
+#show: rvl-theme.with(
+  config-info(
+    title: [Paper Title],
+    presenter: [Your Name],
+    paper_venue: [ICRA 2026],
+    date: rvl-date("2026-05-03"),
+  ),
+)
+```
+
+Use the template package to start a new project:
 
 ```bash
-typst init @preview/rvl-group-meeting:1.0.0
+typst init @preview/steady-rvl-slides:0.1.0
 ```
 
-## Prerequisites
+This creates a project with:
 
-- `typst` CLI
-  Tested in this repo with `typst 0.14.0`
-- `touying` CLI from [touying-exporter](https://github.com/touying-typ/touying-exporter)
-- A working Typst package setup so `@preview/touying:0.6.1` can be resolved during compile
+- `main.typ`
+- `rvl_theme.typ`
+- `assets/logo.png`
 
-## Quick start
+## Minimal example
 
-Create a new deck:
+```typ
+#import "@preview/steady-rvl-slides:0.1.0": *
 
-```bash
-make new DATE=2026-05-11
+#show: rvl-theme.with(
+  config-info(
+    title: [Paper Title],
+    presenter: [Your Name],
+    paper_authors: [First Author, Second Author, Third Author, et al.],
+    paper_venue: [ICRA 2026],
+    date: rvl-date("2026-05-03"),
+  ),
+)
+
+#rvl-title-slide()
+
+#rvl-outline-slide(
+  question: [What is the central research question?],
+)[]
+
+#rvl-slide(title: [Introduction])[
+  - Motivation
+  - Method
+  - Results
+]
 ```
 
-Then edit `config-info(...)` in `examples/2026-05-11/main.typ` and write slides.
+## Public API
+
+- `rvl-theme`
+- `rvl-title-slide`
+- `rvl-slide`
+- `rvl-outline-slide`
+- `rvl-stat-card`
+- `rvl-figure-placeholder`
+- `speaker-note`
+- `alert`
+
+## Template project
+
+In the bundled starter template:
 
 - `= Section` is a logical section marker only.
-- In the starter template, each `== Slide Title` becomes a slide automatically.
+- Each `== Slide Title` becomes a slide automatically.
 - For larger or more stable decks, prefer explicit `#rvl-slide(...)` and `#rvl-outline-slide(...)`.
 
-Build PDF:
+## Development repo
 
-```bash
-make pdf IN=examples/2026-05-11/main.typ
-```
+This repository also includes local development helpers:
 
-Build PowerPoint:
+- `Makefile` for repo-local PDF and PPTX builds
+- `examples/` for real decks and regression checks
+- `skills/` for repo-local slide authoring guidance
 
-```bash
-make pptx IN=examples/2026-05-11/main.typ
-```
-
-## Reference
-
-### Cover fields
-
-`config-info(...)` supports separate cover fields for:
-
-- `presenter`: the speaker shown on the cover
-- `paper_authors`: optional paper author list
-- `paper_venue`: optional source or venue such as `ICRA 2026` or `CVPR 2025`
-
-### Date
-
-The theme expects a date and renders it as `Jan 9, 2026`.
-
-- `date: rvl-date("YYYY-MM-DD")`
-
-### Logo
-
-- `./rvl_template/assets/logo.png` is placed at the top-right.
-- To replace the logo, overwrite that file.
-
-### Repository layout
+## Repository layout
 
 ```text
 .
 ├── typst.toml
 ├── lib.typ
+├── template/
+│   ├── assets/
+│   │   └── logo.png
+│   ├── main.typ
+│   └── rvl_theme.typ
+├── thumbnail.png
 ├── examples/
 │   └── YYYY-MM-DD/
 │       ├── main.typ
 │       ├── paper.pdf
 │       └── figs/
 ├── Makefile
-└── rvl_template/
-    ├── assets/
-    │   └── logo.png
-    ├── main.typ
-    └── rvl_theme.typ
-├── thumbnail.png
+├── rvl_template/
+│   ├── assets/
+│   │   └── logo.png
+│   ├── main.typ
+│   └── rvl_theme.typ
 ├── skills/
 │   └── rvl-group-meeting-typst/
 │       └── SKILL.md
 ```
 
-- `typst.toml` and `lib.typ` define the Typst package entrypoint and template metadata.
-- `rvl_template/main.typ` is the starter template used by `make new`.
-- `examples/` stores dated slide decks and their supporting files.
-- `skills/` stores repo-local workflow guidance for slide-authoring agents.
+- `lib.typ` is the package entrypoint.
+- `template/` is the Universe-facing template copied by `typst init`.
+- `rvl_template/` remains the repo-local source used by the Makefile workflow.
