@@ -29,10 +29,23 @@ Do not invent claims that available sources cannot support.
 
 ## Repo Conventions
 
-- Theme import:
+- Import (single line — Typst Universe package):
   ```typ
-  #import "../../lib.typ": *
+  #import "@preview/steady-rvl-slides:0.1.0": *
   ```
+- Theme + deck metadata (fill `config-info` manually; no `footer:` line):
+  ```typ
+  #show: rvl-theme.with(
+    config-info(
+      title: [Paper Title],
+      presenter: [Chi-Wei],
+      paper_authors: [First Author, Second Author et al.],
+      paper_venue: [ICRA 2025],
+      date: rvl-date("YYYY-MM-DD"),
+    ),
+  )
+  ```
+  `paper_authors` can be a content block `[...]` (author string) or a tuple `("A", "B")`.
 - Cover:
   ```typ
   #rvl-title-slide()
@@ -41,6 +54,55 @@ Do not invent claims that available sources cannot support.
 - Content slides: prefer explicit `#rvl-slide(title: [...])[ ... ]`
 
 When slide stability matters, do not rely on heading-driven auto slide creation. Use explicit `#rvl-slide(...)`.
+
+### Page Layout Building Blocks
+
+The reference style is `examples/2026-06-29/style ref.typ`. Define these helpers at the top of every deck and reuse them:
+
+```typ
+#let small = 15pt
+#let tiny  = 12pt
+
+// Per-page headline: bold RVL blue + spacing
+#let detail(body) = [
+  #set text(size: 18pt, weight: "bold", fill: RVL_PRIMARY)
+  #body
+  #v(0.10in)
+]
+
+// Two-column grid with 18pt body text
+#let twocol(left, right, gutter: 0.28in, columns: (1fr, 1fr)) = {
+  set text(size: 18pt)
+  grid(columns: columns, gutter: gutter, left, right)
+}
+
+// Figure block with contain-fit
+#let img(path, height: 2.45in) = block(width: 100%, height: height)[
+  #image(path, width: 100%, height: height, fit: "contain")
+]
+
+// Table helper: header row gets filled cells, uniform stroke
+#let ctable(cols, rows, widths: auto, size: small) = {
+  set text(size: size)
+  set table(stroke: 0.6pt + rgb("#cbd5e1"), inset: (x: 5pt, y: 4pt))
+  let header = cols.map(c => table.cell(fill: rgb("#eaf0f8"))[*#c*])
+  table(
+    columns: if widths == auto { cols.len() } else { widths },
+    ..header,
+    ..rows.flatten(),
+  )
+}
+```
+
+Conventions when using these helpers:
+
+- **`#detail[...]`** opens every Method/Experiment page immediately after `#rvl-slide(title: [...])`. The slide `title` names the section; `detail` names what *this* page does. They are different.
+- **`#twocol(...)`** is the default layout. Put prose/equations on one side, a figure or info block on the other. Override `columns:` for asymmetric splits (e.g. `columns: (1.2fr, 1fr)`).
+- **`#img(path, height: ...)`** for every paper figure. Adjust `height:` to fit the frame; default 2.45in is a starting point.
+- **`#ctable(cols, rows, ...)`** for all comparison and ablation tables. Pass column headers as a list of strings, rows as a list of lists. Use `widths:` for custom column proportions.
+- **Info / stat callouts.** Use inline `block(fill: ..., radius: 3-4pt, inset: (x: 7-9pt, y: 6-8pt), width: 100%)` for highlighted numbers and short labels. Color palette: `rgb("#eaf0f8")` for neutral, `rgb("#fee2e2")` / `rgb("#dbeafe")` / `rgb("#ede9fe")` / `rgb("#dcfce7")` for semantic categories. Use `RVL_PRIMARY` wherever the theme's primary blue is needed.
+- **Assets path.** Organize figures per paper: `#let paper-img = "assets/<short-name>/"`, then `#img(paper-img + "fig1.png")`.
+- **Equations.** Place display math in `$ ... $`; use `_("subscript")` text subscripts (e.g. `v_("pred")`, `q_("att")`) consistently.
 
 ## Default Workflow
 
@@ -61,33 +123,36 @@ When slide stability matters, do not rely on heading-driven auto slide creation.
 - Slides are not paper paraphrases.
 - Introduction should define scope and contribution, not retell related work.
 - Method pages should prefer structure, equations, and figures over long prose.
+- Every Method/Experiment page opens with `#detail[...]` (see Page Layout Building Blocks) that states the page's specific topic, distinct from the section `title`.
+- Build pages from `#twocol(...)` + `#img(...)` + `#ctable(...)` + info blocks, not flat bullet stacks.
 
-Avoid Q&A or defensive wording in slide body:
+Avoid colloquial or defensive wording in the slide body:
 
 - `actually`
 - `what it is not trying to solve`
-- `why X?`
-- `takeaway`
 
-Prefer neutral academic framing:
+Prefer neutral academic framing for section/block labels:
 
 - `Research Scope`
 - `Contributions`
 - `Architecture`
 - `Controlled comparison`
 
+Short interpretive labels are fine for info-block titles and `#detail` headlines on the Conclusion page (e.g. `All three capability categories transfer`, `The output vocabulary is the mechanism`, `Boundary`).
+
 ## Speaker Note Rules
 
-Speaker notes are not transcripts by default.
+Speaker notes are a detailed teaching script the presenter can read almost verbatim — not a terse outline. Match the depth of `examples/2026-06-29/style ref.typ`: each numbered point is a full spoken explanation. Technical points can be followed by `白話講，……` plain-language restatements, and presenter-synthesized conclusions are wrapped in `（我的歸納：…）` so evidence level is explicit.
 
 Preferred pattern:
 
 ```text
-1. 這頁我要先講……
-2. 這頁的公式 / 圖 / 表格分別對應什麼。
-3. 這頁在整篇論文中的角色是什麼。
-4. 預備問題：如果教授問……
-5. 預備問題：如果教授追問……
+1. 這頁我要先講…（這頁在整篇論文中的角色 / 要支持的 claim）。
+2. 逐一解釋這頁的公式 / 圖 / 表格分別對應什麼；技術點之後接「白話講，……」。
+3. 把這頁接回前一頁或核心問題（必要時標「Experiment 頁再展開」）。
+4. 預備問題：如果教授問「……」，回答是……
+5. 預備問題：如果教授追問「……」，回答是……
+（每頁通常 2–4 個預備問題，把可預期的質疑都先寫好答案。）
 ```
 
 Rules:
@@ -95,14 +160,20 @@ Rules:
 - Answers must stay within the available source files (`paper.pdf`, `paper.md`, `note.md` — whichever exist).
 - When a conclusion belongs to experiment, do not preload it into method notes.
 - Use phrasing like “這頁只能支持到……” when evidence is limited.
+- Use `白話講，……` to restate equations, jargon, and design choices in plain Chinese.
+- Use `（我的歸納：…）` to mark any sentence that is the presenter's synthesis rather than a direct paper claim (corresponds to Evidence Level 3–4).
+- Write enough that a presenter who has not re-read the paper in 30 minutes can deliver the page from the note alone.
 
 ### Prohibited Sentence Patterns
 
-**不是…而是** is prohibited. It wastes words negating before reaching the point.  
-Write the positive claim directly.
+**不是…而是** as filler is discouraged. When the whole sentence is just negating a label before reaching the point, write the positive claim directly.
 
 - Bad: 「這頁不是在做 ablation，而是在問 scaling 的問題。」
 - Good: 「這頁要問的是：end-to-end policy 在 desired speed 改變時，能不能比 modular planner 更穩定地 scale。」
+
+It is acceptable in speaker notes when the contrast genuinely sharpens scope — i.e. correcting a likely misreading of what is or is not being claimed/validated.
+
+- OK: 「real-world 那頁不是在驗證是否見過一模一樣的障礙物，而是在驗證 zero-shot transfer 能不能跨過外觀與幾何差異。」
 
 **Mechanism attribution without paper support** is prohibited. When the paper reports a result without explaining its cause, the notes must not supply a causal explanation.
 
@@ -130,10 +201,10 @@ Distinguish these four levels in speaker notes:
 
 1. **Paper direct quote** — paper 原文說 / paper 明寫
 2. **Paper's own inference** — paper 的結論是 / 作者自己給的解釋是
-3. **Presenter's organizational framing** — 這是根據整個 model design 做出的整理式解讀
+3. **Presenter's organizational framing** — wrap with `（我的歸納：…）`
 4. **Open question** — paper 沒有展開 / 安全講法是停在這裡
 
-When a statement is level 3 or 4, say so explicitly.
+Levels 3 and 4 must be flagged explicitly; use `（我的歸納：…）` for level 3.
 
 ## Outline Slide Pattern
 
@@ -144,6 +215,7 @@ Prefer:
   question: [
     One central research question.
   ],
+  sections: ([Introduction], [Method], [Experiment], [Limitation]),
 )[
   #speaker-note[
     Chinese notes focused on why this question is well-posed,
@@ -152,6 +224,8 @@ Prefer:
   ]
 ]
 ```
+
+Include `sections:` to enumerate the deck's top-level sections in the outline. Adjust the list to match the actual slide structure.
 
 The central question should come from the paper’s real motivation, not from hype around a method family.
 
@@ -172,7 +246,7 @@ Always do all of these:
 
 1. Compile the deck.
 2. Check page count is as expected.
-3. Render slides to PNG if possible.
+3. Render slides to PNG with Typst directly — `typst compile main.typ "out/page-{p}.png"` (Typst writes one PNG per page natively; no PDF-to-image step needed). Add `--ppi 200` for sharper inspection.
 4. Inspect visually for:
    - overflow at bottom
    - clipped bullets
@@ -224,6 +298,29 @@ The Conclusion slide must:
 4. **Not introduce new claims.** The Conclusion cannot contain any result that was not introduced and supported earlier in the deck.
 
 If a key experiment result (e.g., modular baseline comparison) had a dedicated slide, include a one-sentence summary or prepared answer for it in the Conclusion speaker notes, even if it does not appear on the card.
+
+### Four-Card Structure
+
+Use four stat-cards arranged in two columns. Each card answers a distinct question — avoid cards that just re-summarize the method or list results already shown:
+
+| Card | Question to answer |
+|---|---|
+| **Conceptual shift** | What is the single design choice that makes the system work? Name the move, not the components. |
+| **Trade-off profile** | What did the paper exchange? Name what it gave up and what it gained, not just "our method is better". |
+| **What is actually proven** | What claim does the evidence actually support? Name what is *not* proven (optimality, deployment robustness, etc.). |
+| **The real open problem** | What assumption is load-bearing that the paper does not address? Be specific — not "future work is X" but "if X breaks, the pipeline fails because Y". |
+
+A Conclusion card that restates the method steps or lists numbers from previous slides has no nutritional value — rewrite it as an interpretation or judgment.
+
+### Conclusion Speaker Note Rules
+
+The Conclusion note must **not** repeat numbers or method steps already on previous slides. The audience has seen those. Instead:
+
+1. **Explain the design logic** — why the key architectural choice follows from the problem structure, not just that it was made.
+2. **State the trade-off honestly** — if the paper trades flight time for smoothness, say so and say why the authors treat it as acceptable.
+3. **Draw the honest boundary** — what does the evidence actually prove vs. what the authors imply? Flag the gap.
+4. **Name the real open problem** — not the authors' own future work list, but what a skeptical reader would identify as the untested load-bearing assumption.
+5. **Two substantive prepared questions** targeting genuine weaknesses (missing baselines, bypassed perception, robustness to prediction noise, etc.). Do not write softballs.
 
 ## Good Defaults For This Repo
 
